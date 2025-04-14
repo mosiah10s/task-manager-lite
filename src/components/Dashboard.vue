@@ -3,9 +3,9 @@
     <h2>Tasks</h2>
     <button type="button" @click="open = true">Add New Task</button>
     <transition-group name="fade" tag="ul" appear>
-      <li v-for="task in computedTasks" :key="task.id" :class="{ completed: task.completed }">
-        <!-- <router-link :to="{ name: 'ClientDetails', params: { id: task.id } }"> -->
-        <div class="client-card">
+      <li v-for="task in computedTasks" :key="task.id">
+
+        <div class="client-card" :class="{ completed: task.completed }">
           <h3>{{ task.title }}</h3>
           <p>{{ task.description }}</p>
           <p>priority: {{ task.priority }}</p>
@@ -13,90 +13,98 @@
           <font-awesome-icon :icon="['fas', 'pen']" @click="editTask(task)" class="edit-icon" />
           <font-awesome-icon :icon="['fas', 'trash']" @click="deleteTask(task)" />
           <div>
-            <p>Completed: </p><input type="checkbox" v-model="task.completed" />
+            <p>Completed: </p><input type="checkbox" :checked="task.completed" @change="toggleCompleted(task)" />
           </div>
         </div>
-        <!-- </router-link> -->
+
       </li>
     </transition-group>
 
-    <TaskForm :visible="open" :isNew="isNew" @close="open = false" :task="currentTask" @create="addTask"
-      @update="updateTask" />
+    <TaskForm :visible="open" :isNew="isNew" :task="currentTask" @create="handleCreate" @update="handleUpdate"
+      @close="open = false" />
   </div>
 
 
 </template>
 
 <script>
-import taskService from '@/services/taskService.js'
-import TaskForm from './TaskForm.vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons'
-library.add(faTrash, faPen)
+import { mapGetters, mapActions } from 'vuex';
+import TaskForm from './TaskForm.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faTrash, faPen);
 
 export default {
   name: 'Dashboard',
   components: { TaskForm, FontAwesomeIcon },
   data() {
     return {
-      tasks: [],
       open: false,
-      currentTask: {},
+      currentTask: {
+        title: '',
+        description: '',
+        priority: 1,
+        dueDate: '',
+        duration: null
+      },
       isNew: true
-    }
-  },
-  mounted() {
-
-    this.tasks = taskService.getTasks()
-    console.log('Loaded tasks:', this.tasks)
+    };
   },
   computed: {
+    ...mapGetters(['activeTasks']),
     computedTasks() {
-      return this.tasks.filter(x => !x.isDeleted).sort((a, b) => {
-        const dateA = new Date(a.dueDate);
-        const dateB = new Date(b.dueDate);
 
-        if (dateA.getTime() !== dateB.getTime()) {
-          return dateA - dateB; // ascending due date
-        }
-
-        return a.priority - b.priority
-      })
+      const now = new Date().getTime();
+      return this.activeTasks.map(task => {
+        const dueDate = new Date(task.dueDate).getTime() || Infinity;
+        const daysUntilDue = Math.max(0, (dueDate - now) / (1000 * 60 * 60 * 24));
+        const score =
+          (4 - task.priority) * 2 +
+          (1 / (daysUntilDue + 1)) * 3 +
+          (1 / (task.duration || 1)) * 1;
+        return { ...task, score };
+      }).sort((a, b) => b.score - a.score);
     }
   },
   methods: {
-    addTask(val) {
-
-      console.log("addtask", val)
-      this.tasks.push(taskService.addTask(val))
-      this.open = false;
-      this.currentTask = {}
-      console.log('current', this.currentTask)
-
-    },
+    ...mapActions(['addTask', 'updateTask', 'deleteTask']),
     editTask(task) {
-      this.currentTask = { ...task }
-      this.isNew = false
-      this.open = true
-
+      this.currentTask = { ...task };
+      this.isNew = false;
+      this.open = true;
     },
     deleteTask(task) {
-      task.isDeleted = true
-      taskService.deleteTask(task.id)
+      this.$store.dispatch('deleteTask', task.id);
     },
-    updateTask(task) {
-      this.open = false
-      taskService.updateTask(task)
-      const index = this.tasks.findIndex(t => t.id === task.id);
-      if (index !== -1) {
-
-        this.tasks.splice(index, 1, task);
-      }
+    handleCreate(task) {
+      this.addTask(task);
+      this.resetModal();
+    },
+    handleUpdate(task) {
+      this.updateTask(task);
+      this.resetModal();
+    },
+    resetModal() {
+      this.open = false;
+      this.isNew = true;
+      this.currentTask = {
+        title: '',
+        description: '',
+        priority: 1,
+        dueDate: '',
+        duration: null
+      };
+    },
+    toggleCompleted(task) {
+      const updatedTask = { ...task, completed: !task.completed };
+      this.updateTask(updatedTask); // Dispatch to Vuex to update + save
     }
   }
-}
+};
 </script>
+
 
 <style lang="scss" scoped>
 .fade-enter-active,
@@ -120,6 +128,13 @@ a {
   text-decoration: none;
 }
 
+.client-card.completed {
+  background-color: #d4fcd4; // light green for completed
+  opacity: 0.7;
+  text-decoration: line-through;
+  transition: all 0.3s ease;
+}
+
 .client-list {
   max-width: 700px;
   margin: 0 auto;
@@ -131,6 +146,7 @@ a {
     color: #333;
   }
 
+
   ul {
     list-style: none;
     padding: 0;
@@ -140,12 +156,7 @@ a {
 
       display: flex;
 
-      &.completed .client-card {
-        background-color: #d4fcd4; // light green for completed
-        opacity: 0.7;
-        text-decoration: line-through;
-        transition: all 0.3s ease;
-      }
+
 
       .client-card {
         border: 1px solid #ddd;
@@ -171,7 +182,6 @@ a {
           color: #666;
         }
       }
-
 
 
     }
