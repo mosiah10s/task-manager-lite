@@ -1,9 +1,21 @@
-<script setup>
-import TheWelcome from '../components/TheWelcome.vue'
+<template>
+  <div class="home">
+    <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
+    <Dashboard />
+  </div>
+</template>
+
+<script>
+import Dashboard from '@/components/Dashboard.vue'
+
+export default {
+  name: 'HomeView',
+  components: {
+    Dashboard
+  }
+}
 </script>
 
-<template>
-  <main>
-    <TheWelcome />
-  </main>
-</template>
+<style scoped>
+/* Optional styling here */
+</style>
