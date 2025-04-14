@@ -1,18 +1,23 @@
 <template>
   <div class="client-list">
-    <h2>Tasks</h2>
-    <button type="button" @click="open = true">Add New Task</button>
+    <div class="container">
+
+      <button type="button" @click="open = true">Add New Task</button>
+
+    </div>
+
     <transition-group name="fade" tag="ul" appear>
       <li v-for="task in computedTasks" :key="task.id">
 
         <div class="client-card" :class="{ completed: task.completed }">
-          <h3>{{ task.title }}</h3>
-          <p>{{ task.description }}</p>
-          <p>priority: {{ task.priority }}</p>
-          <p>Date: {{ task.dueDate }}</p>
-          <font-awesome-icon :icon="['fas', 'pen']" @click="editTask(task)" class="edit-icon" />
-          <font-awesome-icon :icon="['fas', 'trash']" @click="deleteTask(task)" />
-          <div>
+          <h3 class="item1">{{ task.title }}</h3>
+          <p class="item2">{{ task.description }}</p>
+          <p class="item3">priority: {{ task.priority }}</p>
+          <p class="item4">Date: {{ task.dueDate }}</p>
+          <p class="item5">Duration: {{ task.duration }}</p>
+          <font-awesome-icon :icon="['fas', 'pen']" @click="editTask(task)" class="edit-icon item6" />
+          <font-awesome-icon :icon="['fas', 'trash']" @click="deleteTask(task)" class="item7" />
+          <div class="item8">
             <p>Completed: </p><input type="checkbox" :checked="task.completed" @change="toggleCompleted(task)" />
           </div>
         </div>
@@ -146,6 +151,24 @@ a {
     color: #333;
   }
 
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-content: space-around;
+    padding: auto;
+    margin-bottom: auto;
+    row-gap: 10px;
+
+    button {
+      padding: 10px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+
+
+  }
+
 
   ul {
     list-style: none;
@@ -154,17 +177,71 @@ a {
     li {
       margin-bottom: 1rem;
 
-      display: flex;
+
+
+
 
 
 
       .client-card {
+        display: grid;
+        column-gap: 10px;
+        row-gap: 5px;
+        grid-template-columns: 2fr 1fr 1fr;
+        grid-template-rows: 3fr;
+        align-content: space-around;
+
+
+
+
         border: 1px solid #ddd;
         border-left: 4px solid #42b983;
         padding: 1rem;
         border-radius: 8px;
         background-color: #f9f9f9;
         width: 500px;
+
+
+        .item1 {
+          grid-column: 1/span 1;
+          grid-row: 1 / span 1;
+
+        }
+
+        .item2 {
+          grid-column: 1/span 1;
+          grid-row: 2 / span 1;
+        }
+
+        .item3 {
+          grid-column: 2/span 1;
+          grid-row: 1 / span 1;
+        }
+
+        .item4 {
+          grid-column: 2/span 1;
+          grid-row: 2 / span 1;
+        }
+
+        .item5 {
+          grid-column: 2/span 1;
+          grid-row: 3/ span 1;
+        }
+
+        .item6 {
+          grid-column: 3/span 1;
+          grid-row: 1/ span 1;
+        }
+
+        .item7 {
+          grid-column: 3/span 1;
+          grid-row: 2 / span 1;
+        }
+
+        .item8 {
+          grid-column: 3/span 1;
+          grid-row: 3 / span 1;
+        }
 
         &:hover {
           background-color: #ccffd9;

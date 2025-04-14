@@ -4,11 +4,22 @@
 
             <div v-if="visible" class="modal">
 
-                <form @submit.prevent="handleSubmit">
+                <form @submit.prevent="handleSubmit" class="container">
+                    <label>Title</label>
                     <input v-model="editableTask.title" placeholder="Title *" required />
+                    <label>Description</label>
                     <input v-model="editableTask.description" placeholder="Description" />
-                    <input type="number" v-model.number="editableTask.priority" min="1" max="3" />
+                    <label>Priority</label>
+                    <select v-model.number="editableTask.priority">
+                        <option disabled value="">Please select one</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+
+                    <label>Date</label>
                     <input type="date" v-model="editableTask.dueDate" />
+                    <label>Duration in minutes</label>
                     <input type="number" v-model.number="editableTask.duration" min="1" placeholder="Duration" />
                     <div class="actions">
                         <button type="submit">{{ isNew ? 'Add Task' : 'Save' }}</button>
@@ -76,7 +87,7 @@ export default {
 
 <style scoped>
 .modal-overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
@@ -85,6 +96,7 @@ export default {
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
 }
 
 .modal {
@@ -97,5 +109,11 @@ export default {
     padding: 1rem;
     border: 1px solid #ccc;
     border-radius: 8px;
+}
+
+.container {
+    display: grid;
+    row-gap: 5px;
+
 }
 </style>
