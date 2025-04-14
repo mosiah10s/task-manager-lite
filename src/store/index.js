@@ -1,10 +1,32 @@
 import { createStore } from 'vuex';
 
 const STORAGE_KEY = 'task-manager-lite-tasks';
+const seedTasks = () => ([
+    {
+        id: Date.now(),
+        title: 'Buy groceries',
+        description: 'Milk, eggs, bread',
+        priority: 2,
+        dueDate: new Date().toISOString().slice(0, 10),
+        duration: 30,
+        completed: false,
+        isDeleted: false
+    },
+    {
+        id: Date.now() + 1,
+        title: 'Workout',
+        description: '30-min run',
+        priority: 1,
+        dueDate: new Date(Date.now() + 86400000).toISOString().slice(0, 10), // tomorrow
+        duration: 45,
+        completed: false,
+        isDeleted: false
+    }
+]);
 
 export default createStore({
     state: {
-        tasks: JSON.parse(localStorage.getItem(STORAGE_KEY)) || []
+        tasks: JSON.parse(localStorage.getItem(STORAGE_KEY)) || seedTasks()
     },
     mutations: {
         setTasks(state, tasks) {
