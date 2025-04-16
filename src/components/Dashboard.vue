@@ -14,7 +14,7 @@
           <p class="item2">{{ task.description }}</p>
           <p class="item3">priority: {{ task.priority }}</p>
           <p class="item4">Date: {{ task.dueDate }}</p>
-          <p class="item5">Duration: {{ task.duration }}</p>
+          <p class="item5">Duration in minutes: {{ task.duration }}</p>
           <font-awesome-icon :icon="['fas', 'pen']" @click="editTask(task)" class="edit-icon item6" />
           <font-awesome-icon :icon="['fas', 'trash']" @click="deleteTask(task)" class="item7" />
           <div class="item8">
@@ -202,14 +202,25 @@ a {
         width: 500px;
 
 
-        .item1 {
-          grid-column: 1/span 1;
-          grid-row: 1 / span 1;
 
+        .truncate {
+          display: -webkit-box;
+          -webkit-line-clamp: 2; // number of lines to show
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+        }
+
+        .item1 {
+          @extend .truncate;
+          grid-column: 1 / span 1;
+          grid-row: 1 / span 1;
         }
 
         .item2 {
-          grid-column: 1/span 1;
+          @extend .truncate;
+          grid-column: 1 / span 1;
           grid-row: 2 / span 1;
         }
 

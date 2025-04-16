@@ -8,7 +8,7 @@
                     <label>Title</label>
                     <input v-model="editableTask.title" placeholder="Title *" required />
                     <label>Description</label>
-                    <input v-model="editableTask.description" placeholder="Description" />
+                    <textarea v-model="editableTask.description" placeholder="Description" />
                     <label>Priority</label>
                     <select v-model.number="editableTask.priority">
                         <option disabled value="">Please select one</option>
@@ -26,7 +26,6 @@
                         <button type="button" @click="close">Cancel</button>
                     </div>
                 </form>
-                <!-- <button @click="$emit('close')">Close</button> -->
             </div>
 
         </div>

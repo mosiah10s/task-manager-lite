@@ -15,7 +15,7 @@ const seedTasks = () => ([
     {
         id: Date.now() + 1,
         title: 'Workout',
-        description: '30-min run',
+        description: '30-min run, 15 mins to drive home',
         priority: 1,
         dueDate: new Date(Date.now() + 86400000).toISOString().slice(0, 10), // tomorrow
         duration: 45,
