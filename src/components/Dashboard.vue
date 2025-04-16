@@ -81,7 +81,12 @@ export default {
       this.open = true;
     },
     deleteTask(task) {
-      this.$store.dispatch('deleteTask', task.id);
+      if (confirm('Are you sure you want to delete this item?')) {
+        this.$store.dispatch('deleteTask', task.id);
+        alert('Item deleted successfully!');
+      } else {
+        alert('Delete cancelled.');
+      }
     },
     handleCreate(task) {
       this.addTask(task);
