@@ -26,7 +26,7 @@
     </transition-group>
 
     <TaskForm :visible="open" :isNew="isNew" :task="currentTask" @create="handleCreate" @update="handleUpdate"
-      @close="open = false" />
+      @close="handleClose" />
   </div>
 
 
@@ -89,6 +89,10 @@ export default {
     },
     handleUpdate(task) {
       this.updateTask(task);
+      this.resetModal();
+    },
+    handleClose() {
+      this.open = false;
       this.resetModal();
     },
     resetModal() {
