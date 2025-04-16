@@ -17,7 +17,7 @@
                         <option>3</option>
                     </select>
 
-                    <label>Date</label>
+                    <label>Due Date</label>
                     <input type="date" v-model="editableTask.dueDate" />
                     <label>Duration in minutes</label>
                     <input type="number" v-model.number="editableTask.duration" min="1" placeholder="Duration" />

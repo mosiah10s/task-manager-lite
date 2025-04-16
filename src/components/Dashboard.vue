@@ -13,7 +13,7 @@
           <h3 class="item1">{{ task.title }}</h3>
           <p class="item2">{{ task.description }}</p>
           <p class="item3">priority: {{ task.priority }}</p>
-          <p class="item4">Date: {{ task.dueDate }}</p>
+          <p class="item4">Due Date: {{ task.dueDate }}</p>
           <p class="item5">Duration in minutes: {{ task.duration }}</p>
           <font-awesome-icon :icon="['fas', 'pen']" @click="editTask(task)" class="edit-icon item6" />
           <font-awesome-icon :icon="['fas', 'trash']" @click="deleteTask(task)" class="item7" />
